@@ -1,0 +1,20 @@
+﻿﻿<#@ include file="..\IniTemplate.tt" #>
+<#
+    CreateProperty("Width", 1280, "Graphics");
+    CreateProperty("Height", 720, "Graphics");
+    CreateProperty("Fullscreen", false, "Graphics");
+    CreateProperty("BorderlessFullscreen", false, "Graphics");
+
+    CreateProperty("UseFixedTimeStep", false, "Graphics");
+    CreateProperty("FixedTimeStep", 1.0f / 60.0f, "Graphics");
+
+    CreateProperty("NoRendering", false, "Graphics");
+	CreateProperty("CaptureTimingProperties", true, "Graphics");
+
+	CreateProperty("WorkingDirectory", "Content/", "EditorSettings");
+	CreateProperty("GridAlignment", 0.125f, "EditorSettings");
+    CreateProperty("AngleAlignment", 5.0f, "EditorSettings");
+    CreateProperty("ScaleAlignment", 0.125f, "EditorSettings");
+
+    GenerateIniClass();
+#>

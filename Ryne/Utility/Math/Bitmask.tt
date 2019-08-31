@@ -1,0 +1,107 @@
+﻿<#@ template language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<# 
+Type[] types = new[] 
+{
+	//typeof(SByte),
+    //typeof(Int16), 
+	typeof(Int32), 
+	typeof(Int64),
+    //typeof(Byte),
+    //typeof(UInt16), 
+	typeof(UInt32), 
+	typeof(UInt64)
+};
+#>
+using System;
+namespace Ryne.Utility.Math
+{
+	sealed class Bitmask 
+	{
+		static int Negate(int value)
+		{
+			return -value;
+		}
+
+		static uint Negate(uint value)
+		{
+			return ~value + 1;
+		}
+
+		static long Negate(long value)
+		{
+			return -value;
+		}
+
+		static ulong Negate(ulong value)
+		{
+			return ~value + 1;
+		}
+
+		// Returns the bitmask with given bit set to 1
+		public static int GetMask(int bit)
+		{
+			return 1 << bit;
+		}
+
+<# 
+foreach (var type in types) 
+{ 
+#>
+        public static bool Check(<#= GetType(type) #> mask, <#= GetType(type) #> flag) 
+		{
+            return (mask & flag) > 0;
+        }
+
+		public static bool CheckBit(<#= GetType(type) #> mask, int bit)
+        {
+            <#= GetType(type) #> flag = (<#= GetType(type) #>)1 << bit;
+            return (mask & flag) > 0;
+        }
+
+		public static <#= GetType(type) #> SetBit(<#= GetType(type) #> mask, int bit)
+		{
+			<#= GetType(type) #> flag = (<#= GetType(type) #>)1 << bit;
+			return mask | flag;
+		}
+
+		public static <#= GetType(type) #> ClearBit(<#= GetType(type) #> mask, int bit)
+		{
+			<#= GetType(type) #> flag = (<#= GetType(type) #>)1 << bit;
+			return mask & ~flag;
+		}
+
+		public static <#= GetType(type) #> SetBitTo(<#= GetType(type) #> mask, int bit, <#= GetType(type) #> value)
+		{
+			<#= GetType(type) #> flagMask = Negate(value) ^ mask;
+			<#= GetType(type) #> flag = (<#= GetType(type) #>)1 << bit;
+			return mask ^ (flagMask & flag);
+		}
+
+<#
+} 
+#>
+	}
+}
+<#+
+bool IsSigned(Type type)
+{
+    return type == typeof(SByte) || type == typeof(Int16) || type == typeof(Int32) || type == typeof(Int64);
+}
+bool IsLarge(Type type)
+{
+    return type == typeof(Int64) || type == typeof(UInt64);
+}
+string GetType(Type type)
+{
+	if (IsSigned(type))
+	{
+	    return IsLarge(type) ? "long" : "int";
+	}
+	else
+	{
+	    return IsLarge(type) ? "ulong" : "uint";
+	}
+}
+#>

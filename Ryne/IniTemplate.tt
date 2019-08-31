@@ -1,0 +1,136 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Threading" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".cs" #>using <#
+
+	string baseClassNamespace = "IniGenerator";
+	WriteLine(baseClassNamespace + ";"); 
+
+#><#+
+
+    // Storing all property data
+    // - Section
+    //		- Key
+    //			- Value
+    //			- Type
+    readonly Dictionary<string, Dictionary<string, Tuple<string, Type>>> properties = new Dictionary<string, Dictionary<string, Tuple<string, Type>>>();
+
+
+    /// <summary>
+    /// Create a property that automatically translates from and to the ini file
+    /// </summary>
+    void CreateProperty<T>(string key, T value, string category = "Default")
+    {
+        if (!properties.ContainsKey(category))
+        {
+            properties.Add(category, new Dictionary<string, Tuple<string, Type>>());
+        }
+
+        properties[category].Add(key, new Tuple<string, Type>(value.ToString(), value.GetType()));
+    }
+
+
+    /// <summary>
+    /// Writes a C# file with type-translated properties for all ini properties
+    /// </summary>
+    void GenerateIniClass()
+    {
+		// Set the culture so floating points are stored and loaded correctly
+        //Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
+        var className = Host.TemplateFile.Split('\\').Last().Split('.').First();
+        WriteClassHeader(className, "Ini");
+
+        GenerateClassProperties();
+        GenerateIniConstructor(className);
+        GenerateDefaultIniFunction();
+
+        WriteClassEnding();
+    }
+
+    // Generates default class header information
+    void WriteClassHeader(string className, string parentClass = "")
+    {
+        var namespaceString = System.Runtime.Remoting.Messaging.CallContext.LogicalGetData("NamespaceHint");
+        WriteLine("");
+        WriteLine("namespace " + namespaceString);
+        WriteLine("{");
+        WriteLine(string.Format("\tpublic class {0}{1}", className, string.IsNullOrWhiteSpace(parentClass) ? "" : " : " + parentClass));
+        WriteLine("\t{");
+    }
+
+
+    // Generates default class ending
+    void WriteClassEnding()
+    {
+        WriteLine("\t}");
+        WriteLine("}");
+    }
+
+
+    // Generates a property
+    void WriteIniProperty(string type, string propertyName, string category = "Default")
+    {
+		// String type does not require parsing
+        if (type.ToLower().Contains("system.string"))
+        {
+            WriteLine(String.Format(
+                "\t\tpublic {0} {1} \r\n\t\t{{ \r\n\t\t\tget => IniFile.GetValue(\"{2}\", \"{1}\"); \r\n\t\t\tset => IniFile.SetValue(\"{2}\", \"{1}\", value); \r\n\t\t}}",
+                type, propertyName, category));
+        }
+        else
+        {
+            WriteLine(String.Format(
+                "\t\tpublic {0} {1} \r\n\t\t{{ \r\n\t\t\tget => {0}.Parse(IniFile.GetValue(\"{2}\", \"{1}\")); \r\n\t\t\tset => IniFile.SetValue(\"{2}\", \"{1}\", value.ToString()); \r\n\t\t}}",
+                type, propertyName, category));
+        }
+    }
+
+	// Writes all ini properties
+    void GenerateClassProperties()
+    {
+        foreach (string category in properties.Keys)
+        {
+            WriteLine("\t\t// " + category);
+
+            foreach (var property in properties[category])
+            {
+                var key = property.Key;
+                var type = property.Value.Item2;
+
+				// Property
+                WriteIniProperty(type.ToString(), key, category);
+            }
+
+			WriteLine("");
+        }
+    }
+
+	// Writes class constructor
+    void GenerateIniConstructor(string className)
+    {
+        WriteLine(String.Format("\t\tpublic {0}(string filename = \"{0}.ini\") : base(filename)", className));
+        WriteLine("\t\t{");
+        WriteLine("\t\t}");
+        WriteLine("");
+    }
+
+	// Writes function that generates default values for the ini file
+    void GenerateDefaultIniFunction()
+    {
+        WriteLine("\t\tprotected override void GenerateDefaultIni()");
+		WriteLine("\t\t{");
+
+        foreach (string category in properties.Keys)
+        {
+            foreach (var property in properties[category])
+            {
+                WriteLine("\t\t\tIniFile.SetValue(\"{0}\", \"{1}\", \"{2}\");", category, property.Key, property.Value.Item1);
+            }
+        }
+
+        WriteLine("\t\t}");
+    }
+#>

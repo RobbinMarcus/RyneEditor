@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{75FF4C64-CE22-4AA9-ACF6-55A492DAB41F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Ryne</RootNamespace>
+    <AssemblyName>Ryne</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ryne_outline_icon_2wI_icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="INIFileParser, Version=2.5.2.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
+      <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
+    </Reference>
+    <Reference Include="IniGenerator, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IniGenerator.1.2.0\lib\net452\IniGenerator.dll</HintPath>
+    </Reference>
+    <Reference Include="MessagePack, Version=1.7.3.7, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
+      <HintPath>..\packages\RyneEngine.0.1.8\lib\MessagePack.dll</HintPath>
+    </Reference>
+    <Reference Include="RyneEngine, Version=1.0.7182.29404, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\RyneEngine.0.1.8\lib\RyneEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\RyneEngine.0.1.8\lib\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\RyneEngine.0.1.8\lib\System.ValueTuple.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EngineCore.cs" />
+    <Compile Include="Entities\EventBindings.cs" />
+    <Compile Include="Entities\AreaLight.cs" />
+    <Compile Include="Entities\StaticMesh.cs" />
+    <Compile Include="Gui\EntityGui.cs" />
+    <Compile Include="Gui\GuiElements\InputCheckboxGuiElement.cs" />
+    <Compile Include="Gui\GuiElements\InputFloat2GuiElement.cs" />
+    <Compile Include="Gui\GuiElements\InputFloat3GuiElement.cs" />
+    <Compile Include="Gui\GuiElements\InputFloat4GuiElement.cs" />
+    <Compile Include="Gui\GuiElements\InputGuiElement.cs" />
+    <Compile Include="Gui\GuiElements\InputTextGuiElement.cs" />
+    <Compile Include="Gui\GuiElements\SameLineGuiElement.cs" />
+    <Compile Include="Gui\TextureGui.cs" />
+    <Compile Include="Gui\MaterialGui.cs" />
+    <Compile Include="Gui\NodeEditor\MaterialNodeEditorGui.cs" />
+    <Compile Include="Gui\NodeEditor\NodeEditorGui.cs" />
+    <Compile Include="Gui\NodeEditor\Nodes\EditorNode.cs" />
+    <Compile Include="Gui\NodeEditor\RyneNode.cs" />
+    <Compile Include="Gui\NodeEditor\NodeEditor.cs" />
+    <Compile Include="Gui\NodeEditor\NodeType.cs" />
+    <Compile Include="Gui\NodeEditor\Nodes\MaterialRyneNode.cs" />
+    <Compile Include="Gui\NodeEditor\Nodes\TextureRyneNode.cs" />
+    <Compile Include="Gui\PopupGui.cs" />
+    <Compile Include="Input\EditorGridController.cs" />
+    <Compile Include="Input\PlayerInputMapping.cs" />
+    <Compile Include="Scene\AABB.cs" />
+    <Compile Include="Scene\AccelerationStructures\CompactBvh.cs" />
+    <Compile Include="Scene\Cube.cs" />
+    <Compile Include="Scene\EntityStorage.cs" />
+    <Compile Include="Scene\Events\CollisionEvent.cs" />
+    <Compile Include="Scene\Events\Event.cs" />
+    <Compile Include="Scene\Material.cs" />
+    <Compile Include="Scene\Sphere.cs" />
+    <Compile Include="Scene\Systems\CollisionSystem.cs" />
+    <Compile Include="Utility\Actions\UndoActions.cs" />
+    <Compile Include="Utility\Collections\CircularArray.cs" />
+    <Compile Include="Utility\Collections\CollectionFunctions.cs" />
+    <Compile Include="Utility\Collections\ContiguousArray.cs" />
+    <Compile Include="Utility\Config.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Config.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\GuiElements\ButtonGuiElement.cs" />
+    <Compile Include="Gui\GuiElements\CancelButtonGuiElement.cs" />
+    <Compile Include="Gui\GuiElements\InputFloatGuiElement.cs" />
+    <Compile Include="Gui\GuiElements\InputIntGuiElement.cs" />
+    <Compile Include="Gui\GuiElements\OkButtonGuiElement.cs" />
+    <Compile Include="Gui\WindowGui.cs" />
+    <Compile Include="Gui\FileExplorerGui.cs" />
+    <Compile Include="Gui\ImGuiWrapper.cs" />
+    <Compile Include="Gui\GuiElements\IGuiElement.cs" />
+    <Compile Include="Gui\GuiElements\TextGuiElement.cs" />
+    <Compile Include="Gui\SceneEditorGui.cs" />
+    <Compile Include="Gui\StringInputGui.cs" />
+    <Compile Include="IniTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IniTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Input\EditorInputMapping.cs" />
+    <Compile Include="Input\InputMapping.cs" />
+    <Compile Include="Scene\EntityManager.cs" />
+    <Compile Include="Scene\Scene.cs" />
+    <Compile Include="Scene\Systems\BaseSystem.cs" />
+    <Compile Include="Scene\Systems\EventSystem.cs" />
+    <Compile Include="Scene\Systems\PhysicsSystem.cs" />
+    <Compile Include="Utility\Actions\IAction.cs" />
+    <Compile Include="Utility\Actions\InputActions.cs" />
+    <Compile Include="Utility\Constants.cs" />
+    <Compile Include="Input\Controller.cs" />
+    <Compile Include="GameStates\Game.cs" />
+    <Compile Include="GameStates\GameState.cs" />
+    <Compile Include="GameStates\MainMenu.cs" />
+    <Compile Include="GameStates\SceneEditor.cs" />
+    <Compile Include="GameStates\StateManager.cs" />
+    <Compile Include="Utility\Helpers.cs" />
+    <Compile Include="Utility\IUpdatable.cs" />
+    <Compile Include="Entities\Player.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scene\Components\CollisionComponent.cs" />
+    <Compile Include="Scene\Components\Components.cs" />
+    <Compile Include="Scene\Components\MeshComponent.cs" />
+    <Compile Include="Scene\Components\PhysicsComponent.cs" />
+    <Compile Include="Scene\Components\TransformComponent.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Utility\Collections\DynamicArray.cs" />
+    <Compile Include="Utility\Global.cs" />
+    <Compile Include="Utility\Collections\ListExtensionFunctions.cs" />
+    <Compile Include="Utility\Logger.cs" />
+    <Compile Include="Utility\Math\Bitmask.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Bitmask.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Utility\Math\Math.cs" />
+    <Compile Include="Utility\Math\Quaternion.cs" />
+    <Compile Include="Utility\Math\Rotator.cs" />
+    <Compile Include="Utility\Math\SeparatingAxisTheorem.cs" />
+    <Compile Include="Utility\ReflectionCode.cs" />
+    <Compile Include="Utility\Timer.cs" />
+    <Compile Include="Utility\TimerManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ryne_outline_icon_2wI_icon.ico" />
+    <Content Include="Utility\Config.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Config.cs</LastGenOutput>
+    </Content>
+    <Content Include="IniTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IniTemplate.cs</LastGenOutput>
+    </Content>
+    <Content Include="Utility\Math\Bitmask.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Bitmask.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(SolutionDir)RyneEngine\*.dll" "$(TargetDir)" /d /y /f
+xcopy "$(SolutionDir)Content" "$(TargetDir)Content" /e /y /i /r /d</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\packages\RyneEngine.0.1.8\build\RyneEngine.targets" Condition="Exists('..\packages\RyneEngine.0.1.8\build\RyneEngine.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\RyneEngine.0.1.8\build\RyneEngine.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RyneEngine.0.1.8\build\RyneEngine.targets'))" />
+  </Target>
+</Project>
