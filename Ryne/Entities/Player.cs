@@ -20,6 +20,8 @@ namespace Ryne.Entities
             var renderSize = Global.Application.GetRenderSize();
             PlayerCamera = new RyneCamera(renderSize.X, renderSize.Y);
 
+            PlayerController = new Controller();
+
             // Components
             AddComponent<TransformComponent>();
             AddComponent<PhysicsComponent>();
@@ -40,9 +42,8 @@ namespace Ryne.Entities
 
             Collision.SetCube(new Cube(new Float4(0.0f), new Float4(0.25f, 0.25f, 0.5f, 0.0f), Quaternion.Default));
 
-            PlayerCamera.Position = Transform.Position;
+            PlayerCamera.SetPosition(Transform.Position);
 
-            PlayerController = new Controller();
             PlayerController.SetMouseCentered(true);
             PlayerController.ControlEntity(this);
             PlayerController.SetInputMapping(new PlayerInputMapping());
@@ -60,15 +61,16 @@ namespace Ryne.Entities
 
             if (PlayerController.Changed())
             {
-                PlayerCamera.Rotation += new Float3(PlayerController.RotationDelta) * dt;
-                float rotationY = RyneMath.Clamp(PlayerCamera.Rotation.Y, -89.0f, 89.0f);
-                PlayerCamera.Rotation = new Float3(PlayerCamera.Rotation.X, rotationY, 0);
+                var rotation = PlayerCamera.GetRotation();
+                rotation += new Float3(PlayerController.RotationDelta) * dt;
+                float rotationY = RyneMath.Clamp(rotation.Y, -89.0f, 89.0f);
+                PlayerCamera.SetRotation(new Float3(rotation.X, rotationY, 0));
 
                 // We only want the player entity to rotate horizontally
-                Transform.Rotation = new Rotator(new Float3(PlayerCamera.Rotation.X, 0, 0)).ToQuaternion();
+                Transform.Rotation = new Rotator(new Float3(rotation.X, 0, 0)).ToQuaternion();
             }
 
-            PlayerCamera.Position = Transform.GetLocation();
+            PlayerCamera.SetPosition(Transform.GetLocation());
             PlayerCamera.Update(dt);
         }
 

@@ -12,6 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,7 +25,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <NuGetPackageImportStamp>
@@ -41,7 +41,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>x64</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -69,43 +69,36 @@
       <HintPath>..\packages\IniGenerator.1.2.0\lib\net452\IniGenerator.dll</HintPath>
     </Reference>
     <Reference Include="MessagePack, Version=1.7.3.7, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
-      <HintPath>..\packages\RyneEngine.0.1.8\lib\MessagePack.dll</HintPath>
+      <HintPath>..\packages\RyneEngine.0.1.9\lib\MessagePack.dll</HintPath>
     </Reference>
-    <Reference Include="RyneEngine, Version=1.0.7182.29404, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\RyneEngine.0.1.8\lib\RyneEngine.dll</HintPath>
+    <Reference Include="RyneEngine, Version=1.0.7505.21630, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\RyneEngine.0.1.9\lib\RyneEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\RyneEngine.0.1.8\lib\System.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>..\packages\RyneEngine.0.1.9\lib\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\RyneEngine.0.1.8\lib\System.ValueTuple.dll</HintPath>
+      <HintPath>..\packages\RyneEngine.0.1.9\lib\System.ValueTuple.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EngineCore.cs" />
     <Compile Include="Entities\EventBindings.cs" />
     <Compile Include="Entities\AreaLight.cs" />
+    <Compile Include="Entities\Spawn.cs" />
     <Compile Include="Entities\StaticMesh.cs" />
-    <Compile Include="Gui\EntityGui.cs" />
     <Compile Include="Gui\GuiElements\InputCheckboxGuiElement.cs" />
     <Compile Include="Gui\GuiElements\InputFloat2GuiElement.cs" />
     <Compile Include="Gui\GuiElements\InputFloat3GuiElement.cs" />
     <Compile Include="Gui\GuiElements\InputFloat4GuiElement.cs" />
+    <Compile Include="Gui\GuiElements\InputFloatSliderGuiElement.cs" />
     <Compile Include="Gui\GuiElements\InputGuiElement.cs" />
+    <Compile Include="Gui\GuiElements\InputGuiElementSelector.cs" />
     <Compile Include="Gui\GuiElements\InputTextGuiElement.cs" />
     <Compile Include="Gui\GuiElements\SameLineGuiElement.cs" />
-    <Compile Include="Gui\TextureGui.cs" />
-    <Compile Include="Gui\MaterialGui.cs" />
-    <Compile Include="Gui\NodeEditor\MaterialNodeEditorGui.cs" />
-    <Compile Include="Gui\NodeEditor\NodeEditorGui.cs" />
-    <Compile Include="Gui\NodeEditor\Nodes\EditorNode.cs" />
-    <Compile Include="Gui\NodeEditor\RyneNode.cs" />
-    <Compile Include="Gui\NodeEditor\NodeEditor.cs" />
-    <Compile Include="Gui\NodeEditor\NodeType.cs" />
-    <Compile Include="Gui\NodeEditor\Nodes\MaterialRyneNode.cs" />
-    <Compile Include="Gui\NodeEditor\Nodes\TextureRyneNode.cs" />
+    <Compile Include="Gui\Windows\MaterialGui.cs" />
     <Compile Include="Gui\PopupGui.cs" />
     <Compile Include="Input\EditorGridController.cs" />
     <Compile Include="Input\PlayerInputMapping.cs" />
@@ -116,12 +109,12 @@
     <Compile Include="Scene\Events\CollisionEvent.cs" />
     <Compile Include="Scene\Events\Event.cs" />
     <Compile Include="Scene\Material.cs" />
+    <Compile Include="Scene\RangeAttribute.cs" />
     <Compile Include="Scene\Sphere.cs" />
     <Compile Include="Scene\Systems\CollisionSystem.cs" />
     <Compile Include="Utility\Actions\UndoActions.cs" />
     <Compile Include="Utility\Collections\CircularArray.cs" />
     <Compile Include="Utility\Collections\CollectionFunctions.cs" />
-    <Compile Include="Utility\Collections\ContiguousArray.cs" />
     <Compile Include="Utility\Config.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -132,8 +125,8 @@
     <Compile Include="Gui\GuiElements\InputFloatGuiElement.cs" />
     <Compile Include="Gui\GuiElements\InputIntGuiElement.cs" />
     <Compile Include="Gui\GuiElements\OkButtonGuiElement.cs" />
-    <Compile Include="Gui\WindowGui.cs" />
-    <Compile Include="Gui\FileExplorerGui.cs" />
+    <Compile Include="Gui\Windows\WindowGui.cs" />
+    <Compile Include="Gui\Windows\FileExplorerGui.cs" />
     <Compile Include="Gui\ImGuiWrapper.cs" />
     <Compile Include="Gui\GuiElements\IGuiElement.cs" />
     <Compile Include="Gui\GuiElements\TextGuiElement.cs" />
@@ -226,13 +219,14 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(SolutionDir)RyneEngine\*.dll" "$(TargetDir)" /d /y /f
+
 xcopy "$(SolutionDir)Content" "$(TargetDir)Content" /e /y /i /r /d</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\RyneEngine.0.1.8\build\RyneEngine.targets" Condition="Exists('..\packages\RyneEngine.0.1.8\build\RyneEngine.targets')" />
+  <Import Project="..\packages\RyneEngine.0.1.9\build\RyneEngine.targets" Condition="Exists('..\packages\RyneEngine.0.1.9\build\RyneEngine.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\RyneEngine.0.1.8\build\RyneEngine.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RyneEngine.0.1.8\build\RyneEngine.targets'))" />
+    <Error Condition="!Exists('..\packages\RyneEngine.0.1.9\build\RyneEngine.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RyneEngine.0.1.9\build\RyneEngine.targets'))" />
   </Target>
 </Project>

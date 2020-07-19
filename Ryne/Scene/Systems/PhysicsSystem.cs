@@ -7,13 +7,15 @@ namespace Ryne.Scene.Systems
     {
         private EventSystem Events;
 
-        //private float FloorZ;
+        private readonly bool UseGravity;
+        private readonly bool UseFriction;
 
         public PhysicsSystem(EntityManager manager) : base(manager, 
             Components.Components.GetComponentIndex<PhysicsComponent>()
             | Components.Components.GetComponentIndex<TransformComponent>())
         {
-            //FloorZ = 0.0f;
+            UseGravity = true;
+            UseFriction = true;
         }
 
         public override void RegisterEntity(Entity entity)
@@ -48,15 +50,16 @@ namespace Ryne.Scene.Systems
                 // Clear forces
                 physics.Acceleration = new Float4(0.0f);
 
-                // Apply friction
-                physics.Velocity *= 0.99f;
+                if (UseFriction)
+                {
+                    physics.Velocity *= 0.99f;
+                }
             }
         }
 
         private void AddForces(ref PhysicsComponent physics)
         {
-            // TODO: Only apply gravity when not on a surface
-            if (!physics.OnSurface)
+            if (UseGravity && !physics.OnSurface)
             {
                 physics.Acceleration += new Float4(0, 0, -10, 0);
             }

@@ -8,7 +8,8 @@ namespace Ryne.Utility
     {
         Normal,
         Warning,
-        Error
+        Error,
+        Engine // All messages from the backend side
     }
 
     public class Logger
@@ -60,6 +61,13 @@ namespace Ryne.Utility
             throw new Exception(message);
 #endif
         }
+
+        public static void EngineLog(string message)
+        {
+            Log(message, LogCategory.Engine);
+            Flush();
+        }
+
 
         // Writes log in file
         public static void Flush(string filename = "Log.txt", FileMode mode = FileMode.Append)

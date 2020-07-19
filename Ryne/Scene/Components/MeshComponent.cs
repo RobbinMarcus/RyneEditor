@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using Ryne.Entities;
@@ -7,7 +6,7 @@ using Ryne.Gui;
 using Ryne.Utility;
 using Ryne.Utility.Math;
 using MessagePack;
-using Ryne.Gui.NodeEditor;
+using Ryne.Gui.Windows;
 
 namespace Ryne.Scene.Components
 {
@@ -35,7 +34,6 @@ namespace Ryne.Scene.Components
 
         public List<Material> CustomMaterials { get; private set; }
 
-
         public void RenderGui(ImGuiWrapper gui, Entity owner)
         {
             if (!(gui is SceneEditorGui sceneGui))
@@ -49,25 +47,15 @@ namespace Ryne.Scene.Components
                 {
                     if (sceneGui.MenuItem("Load voxel mesh"))
                     {
-                        var extensions = Global.ResourceManager.GetSupportedExtensions(RyneResourceType.ResourceTypeDag);
+                        var extensions = Global.ResourceManager.GetSupportedExtensions(RyneResourceType.ResourceTypeBsvDag);
                         var window = new FileExplorerGui(sceneGui, "VoxelModels", extensions, "Select model");
                         window.Callback += result =>
                         {
                             var fileExplorer = (FileExplorerGui)result;
-                            owner.Mesh.SetMeshData(fileExplorer.SelectedFile, RyneObjectType.ObjectTypeDAG);
+                            var type = RyneObjectType.ObjectTypeBsvDag;
+                            owner.Mesh.SetMeshData(fileExplorer.SelectedFile, type);
                             owner.Mesh.LoadMesh();
-                        };
-                        sceneGui.AddPopup(window);
-                    }
-                    if (sceneGui.MenuItem("Load triangle mesh"))
-                    {
-                        var extensions = Global.ResourceManager.GetSupportedExtensions(RyneResourceType.ResourceTypeTriangleModel);
-                        var window = new FileExplorerGui(sceneGui, "Models", extensions, "Select model");
-                        window.Callback += result =>
-                        {
-                            var fileExplorer = (FileExplorerGui)result;
-                            owner.Mesh.SetMeshData(fileExplorer.SelectedFile, RyneObjectType.ObjectTypeTriangle);
-                            owner.Mesh.LoadMesh();
+                            owner.SetChangedInEditor(true);
                         };
                         sceneGui.AddPopup(window);
                     }
@@ -94,21 +82,9 @@ namespace Ryne.Scene.Components
                             var localIndex = i;
                             var material = CustomMaterials[i];
                             var name = string.IsNullOrEmpty(material.Name) ? localIndex.ToString() : material.Name;
-
-                            //if (gui.MenuItem("Edit Material " + name))
-                            //{
-                            //    var renderData = sceneGui.SceneData;
-                            //    var material = CustomMaterials.Count > 0 ? CustomMaterials[i] : Material.Create(renderData.GetMaterial(owner.RenderId, i));
-                            //    var window = new MaterialGui(sceneGui, material, result =>
-                            //    {
-                            //        owner.Mesh.UpdateMaterial(owner, sceneGui.SceneData, (Material)result.GetWindowObject, localIndex);
-                            //    });
-                            //    sceneGui.AddWindow(window);
-                            //}
-
                             if (gui.MenuItem("Edit Material " + name))
                             {
-                                var window = new MaterialNodeEditorGui(sceneGui, material, result =>
+                                var window = new MaterialGui(sceneGui, material, result =>
                                 {
                                     owner.Mesh.UpdateMaterial(owner, sceneGui.SceneData, (Material)result.GetWindowObject, localIndex);
                                 });
@@ -137,7 +113,7 @@ namespace Ryne.Scene.Components
 
         public void LoadMesh()
         {
-            if ((int)ObjectType < (int)RyneObjectType.ObjectTypeTriangle || (int)ObjectType > (int)RyneObjectType.ObjectTypeOsvDag)
+            if ((int)ObjectType != (int)RyneObjectType.ObjectTypeBsvDag)
             {
                 Logger.Error($"Loading mesh: Wrong type: {ObjectType}");
                 return;
@@ -161,16 +137,6 @@ namespace Ryne.Scene.Components
 
             SetFlag(MeshFlag.Loaded, true);
             OnMeshLoadedCallback?.Invoke();
-        }
-
-        public RyneMeshComponent ToRenderComponent()
-        {
-            RyneMeshComponent result = new RyneMeshComponent
-            {
-                ObjectType = ObjectType,
-                GeometryIndex = GeometryIndex
-            };
-            return result;
         }
 
         public void SetDefaults()
@@ -214,13 +180,12 @@ namespace Ryne.Scene.Components
 
         private bool MeshDataSet()
         {
-            bool meshDataSet = (int)ObjectType >= (int)RyneObjectType.ObjectTypeTriangle &&
-                               (int)ObjectType <= (int)RyneObjectType.ObjectTypeOsvDag;
+            bool meshDataSet = (int)ObjectType == (int)RyneObjectType.ObjectTypeBsvDag;
             meshDataSet &= !string.IsNullOrEmpty(MeshFilename);
             return meshDataSet;
         }
 
-        private void SetCustomMaterials(Entity owner)
+        public void SetCustomMaterials(Entity owner)
         {
             var sceneRenderData = Global.StateManager.GetCurrentState().SceneRenderData;
             sceneRenderData.CreateSeparateMaterialsForInstance(owner.RenderId);
@@ -260,7 +225,7 @@ namespace Ryne.Scene.Components
         }
 
 
-        private void UpdateMaterial(Entity owner, RyneSceneRenderData renderData, Material newMaterial, int materialId)
+        public void UpdateMaterial(Entity owner, RyneSceneRenderData renderData, Material newMaterial, int materialId)
         {
             owner.SetChangedInEditor(true);
             // Update material in render backend

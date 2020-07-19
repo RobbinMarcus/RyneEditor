@@ -5,6 +5,24 @@ namespace Ryne.Utility
     public static class TimerManager
     {
         private static readonly Dictionary<string, Timer> Timers = new Dictionary<string, Timer>();
+        private static readonly Timer ApplicationTimer = new Timer();
+
+        public static void Initialize()
+        {
+            ApplicationTimer.Start();
+        }
+
+        // Elapsed milliseconds since application start
+        public static float ElapsedMilliseconds()
+        {
+            return ApplicationTimer.MilliSeconds;
+        }
+
+        // Elapsed seconds since application start
+        public static double ElapsedSeconds()
+        {
+            return ApplicationTimer.Seconds;
+        }
 
         public static void AddTimer(string name)
         {

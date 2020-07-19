@@ -5,6 +5,7 @@ using System.Linq;
 using Ryne.Entities;
 using Ryne.GameStates;
 using Ryne.Gui.GuiElements;
+using Ryne.Gui.Windows;
 using Ryne.Utility;
 
 namespace Ryne.Gui
@@ -15,6 +16,8 @@ namespace Ryne.Gui
 
         private readonly List<WindowGui> ActiveWindows;
         private readonly List<PopupGui> ActivePopups;
+
+        private readonly List<WindowGui> WindowsToAdd;
 
         public bool RenderDebugVisualization
         {
@@ -37,6 +40,8 @@ namespace Ryne.Gui
             Editor = editor;
             ActiveWindows = new List<WindowGui>();
             ActivePopups = new List<PopupGui>();
+
+            WindowsToAdd = new List<WindowGui>();
 
             RenderDebugVisualizationToggle = false;
             RenderSettingsToggle = false;
@@ -84,6 +89,11 @@ namespace Ryne.Gui
 
             if (RenderDebugVisualization)
             {
+                if (Editor.TraceDebugRay)
+                {
+                    Editor.SceneRenderData.RenderDebugRays(this);
+                }
+
                 DebugRenderVisualization(Editor.EditorCamera);
             }
 
@@ -110,7 +120,7 @@ namespace Ryne.Gui
                 ActiveWindows.RemoveAll(x => x.WindowTitle == window.WindowTitle);
             }
 
-            ActiveWindows.Add(window);
+            WindowsToAdd.Add(window);
         }
 
         public void AddPopup(PopupGui popup)
@@ -171,30 +181,6 @@ namespace Ryne.Gui
 
                     Separator();
 
-                    if (MenuItem("Voxelize model"))
-                    {
-                        var extensions = Global.ResourceManager.GetSupportedExtensions(RyneResourceType.ResourceTypeTriangleModel);
-                        var window = new FileExplorerGui(this, "Models", extensions, "Voxelize model");
-                        window.Callback += result =>
-                        {
-                            var file = ((FileExplorerGui)result).SelectedFile;
-                            var popup = new PopupGui(this, "Voxelize model");
-                            popup.AddElement(new InputIntGuiElement("Voxel levels", 9));
-                            popup.AddElement(new InputCheckboxGuiElement("Store triangle data"));
-
-                            popup.Callback += gui =>
-                            {
-                                var values = gui.GetElementValues();
-                                var levels = (int)values["Voxel levels"];
-                                var triangleData = (bool)values["Store triangle data"];
-                                int voxelizeFlags = triangleData ? (int)RyneVoxelizeSetting.CreateTriangleData : 0;
-                                Editor.VoxelizeModel(file, levels, voxelizeFlags);
-                            };
-                            AddPopup(popup);
-                        };
-                        AddPopup(window);
-                    }
-
                     if (MenuItem("Change background HDRI"))
                     {
                         var extensions = Global.ResourceManager.GetSupportedExtensions(RyneResourceType.ResourceTypeTexture);
@@ -206,6 +192,7 @@ namespace Ryne.Gui
                     EndMenu();
                 }
 
+                // TODO: create a debug render mode instead?
                 if (BeginMenu("View"))
                 {
                     if (MenuItem("Render statistics"))
@@ -220,6 +207,12 @@ namespace Ryne.Gui
                     {
                         Editor.EditorCamera.OpenEditorWindow(this);
                     }
+
+#if DEBUG
+                    Separator();
+                    if (MenuItem("Debug rays", ref Editor.TraceDebugRay)) { }
+                    if (MenuItem("Render debug visualization", ref RenderDebugVisualizationToggle)) { }
+#endif
 
                     EndMenu();
                 }
@@ -385,16 +378,14 @@ namespace Ryne.Gui
                 Begin("Change render settings", ref RenderSettingsToggle);
 
                 int renderMode = SceneData.GetRenderMode();
-                if (InputRenderMode("RenderMode", ref renderMode)) SceneData.ChangeRendermode((RyneRenderMode)renderMode);
+                var values = Enum.GetNames(typeof(RyneRenderMode)).ToList();
+                if (InputCombo("RenderMode", values, ref renderMode)) SceneData.ChangeRendermode((RyneRenderMode)renderMode);
 
                 bool nee = SceneData.GetNextEventEstimation();
                 if (InputCheckBox("Next event estimation", ref nee)) SceneData.SetNextEventEstimation(nee);
 
-                bool optixDenoiser = SceneData.GetUseOptixDenoiser();
-                if (InputCheckBox("Use Optix denoiser", ref optixDenoiser)) SceneData.SetUseOptixDenoiser(optixDenoiser);
-
-                bool intelDenoiser = SceneData.GetUseIntelDenoiser();
-                if (InputCheckBox("Use Intel denoiser", ref intelDenoiser)) SceneData.SetUseIntelDenoiser(intelDenoiser);
+                bool beamRays = SceneData.GetUseBeamRays();
+                if (InputCheckBox("Use Beam rays", ref beamRays)) SceneData.SetUseBeamRays(beamRays);
 
                 int maxPathDepth = SceneData.GetMaxPathDepth();
                 if (InputInt("Max path depth", ref maxPathDepth)) SceneData.SetMaxPathDepth((uint)(maxPathDepth % 8));
@@ -446,6 +437,12 @@ namespace Ryne.Gui
                 ActiveWindows.Remove(window);
                 window.OnClose();
             }
+
+            foreach (var window in WindowsToAdd)
+            {
+                ActiveWindows.Add(window);
+            }
+            WindowsToAdd.Clear();
         }
 
         private void RenderPopups()

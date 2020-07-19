@@ -1,4 +1,5 @@
-﻿using Ryne.GameStates;
+﻿using System;
+using Ryne.GameStates;
 using Ryne.Scene;
 
 namespace Ryne.Utility
@@ -15,5 +16,7 @@ namespace Ryne.Utility
         // References to globals from bindings
         public static RyneApplication Application => RyneGlobal.GlobalApplication;
         public static RyneResourceManager ResourceManager => RyneGlobal.GlobalResourceManager;
+
+        public static Random Random = new Random();
     }
 }

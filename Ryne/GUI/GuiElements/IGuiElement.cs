@@ -1,4 +1,6 @@
-﻿namespace Ryne.Gui.GuiElements
+﻿using Ryne.Gui.Windows;
+
+namespace Ryne.Gui.GuiElements
 {
     public interface IGuiElement
     {

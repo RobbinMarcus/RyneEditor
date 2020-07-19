@@ -1,4 +1,5 @@
-﻿using Ryne.Entities;
+﻿using System.Linq;
+using Ryne.Entities;
 using Ryne.Utility;
 
 namespace Ryne.GameStates
@@ -43,6 +44,16 @@ namespace Ryne.GameStates
             Player = new Player();
             Global.EntityManager.AddEntity(Player);
             SceneData.SetRenderCamera(Player.PlayerCamera);
+
+            var spawn = Global.EntityManager.Entities.FirstOrDefault(x => x.GetType() == typeof(Spawn));
+            if (spawn != null)
+            {
+                Player.Transform.Position = spawn.Transform.Position;
+            }
+            else
+            {
+                Player.Transform.Position = new Float4(0);
+            }
         }
 
         public override void Update(float dt)

@@ -79,7 +79,7 @@ namespace Ryne.Utility.Actions
     }
 
 
-    class InputMovementAction : VectorInputAction
+    public class InputMovementAction : VectorInputAction
     {
         // Whether this input will be normalized with other inputs in the Controller
         public bool Normalize { get; }
@@ -113,7 +113,7 @@ namespace Ryne.Utility.Actions
     }
 
 
-    class InputRotationAction : VectorInputAction
+    public class InputRotationAction : VectorInputAction
     {
         public InputRotationAction(Float3 direction, float length, bool relative = false) : base(direction, length)
         {
@@ -147,7 +147,7 @@ namespace Ryne.Utility.Actions
     }
 
 
-    class InputScalingAction : VectorInputAction
+    public class InputScalingAction : VectorInputAction
     {
         public InputScalingAction(Float3 direction, float length) : base(direction, length)
         {
@@ -166,7 +166,7 @@ namespace Ryne.Utility.Actions
 
 
     public delegate void InputControllerActionCallback(Controller controller);
-    class InputControllerAction : InputAction
+    public class InputControllerAction : InputAction
     {
         public InputControllerActionCallback Function;
 
@@ -183,7 +183,7 @@ namespace Ryne.Utility.Actions
     }
 
 
-    class InputDelegateAction : InputAction
+    public class InputDelegateAction : InputAction
     {
         public RyneNotifyFunction Function;
 

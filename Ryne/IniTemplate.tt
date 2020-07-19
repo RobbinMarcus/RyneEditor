@@ -38,7 +38,7 @@
     void GenerateIniClass()
     {
 		// Set the culture so floating points are stored and loaded correctly
-        //Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+        Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
         var className = Host.TemplateFile.Split('\\').Last().Split('.').First();
         WriteClassHeader(className, "Ini");
@@ -57,7 +57,7 @@
         WriteLine("");
         WriteLine("namespace " + namespaceString);
         WriteLine("{");
-        WriteLine(string.Format("\tpublic class {0}{1}", className, string.IsNullOrWhiteSpace(parentClass) ? "" : " : " + parentClass));
+        WriteLine(string.Format("\tclass {0}{1}", className, string.IsNullOrWhiteSpace(parentClass) ? "" : " : " + parentClass));
         WriteLine("\t{");
     }
 

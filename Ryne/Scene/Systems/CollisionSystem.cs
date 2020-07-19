@@ -272,8 +272,8 @@ namespace Ryne.Scene.Systems
         // Returns true if AABB's overlap
         public static bool AABBAABBOverlap(AABB a1, AABB a2)
         {
-            return a1.Max.Z > a2.Min.X
-                && a1.Min.Z < a2.Max.X
+            return a1.Max.X > a2.Min.X
+                && a1.Min.X < a2.Max.X
                 && a1.Max.Y > a2.Min.Y
                 && a1.Min.Y < a2.Max.Y
                 && a1.Max.Z > a2.Min.Z

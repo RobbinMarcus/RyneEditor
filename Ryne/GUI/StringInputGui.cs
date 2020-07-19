@@ -1,4 +1,6 @@
-﻿namespace Ryne.Gui
+﻿using Ryne.Gui.Windows;
+
+namespace Ryne.Gui
 {
     class StringInputGui : WindowGui
     {

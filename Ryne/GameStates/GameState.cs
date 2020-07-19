@@ -46,9 +46,9 @@ namespace Ryne.GameStates
                 return;
             }
 
-            // We only register entities that have a transform to the backend
             if (!entity.HasComponent<TransformComponent>())
             {
+                Logger.Warning($"Tried to register entity without transform: {entity.Name}");
                 return;
             }
 
@@ -71,7 +71,7 @@ namespace Ryne.GameStates
                 return;
             }
 
-            entity.RenderId = SceneRenderData.RegisterEntity(entity.Transform.ToRenderComponent(), entity.Mesh.ToRenderComponent());
+            entity.RenderId = SceneRenderData.RegisterEntity(entity.Transform.ToRenderComponent(), entity.Mesh.ObjectType, entity.Mesh.GeometryIndex);
             entity.SetFlag(EntityFlag.RegisteredBackend, true);
             entity.Mesh.OnRegistered(entity);
         }

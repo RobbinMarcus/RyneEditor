@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Ryne.Entities;
@@ -31,13 +32,16 @@ namespace Ryne.GameStates
 
     public class SceneEditor : GameState
     {
+        // DEBUG
+        public bool TraceDebugRay;
+
         public SceneEditorGui Gui { get; }
 
         // Copy of all entities to reset the world after game testing
         private EntityStorage EditorEntities;
 
         public RyneCamera EditorCamera { get; }
-        private Entity EditorCameraEntity;
+        public Entity EditorCameraEntity { get; private set; }
         private readonly Controller EditorController;
         private readonly EditorGridController EntityController;
 
@@ -76,6 +80,7 @@ namespace Ryne.GameStates
             EditorCamera = new RyneCamera(Global.Config.Width, Global.Config.Height);
             UndoBuffer = new Queue<IAction>();
 
+            TraceDebugRay = false;
             CurrentEditMode = EditMode.Translate;
             CurrentEditAxis = EditAxis.All;
         }
@@ -176,7 +181,16 @@ namespace Ryne.GameStates
             if (Global.Application.MouseReleased((int)RyneMouse.Button0) && !EntityController.MovedMouseSinceStart)
             {
                 var cursorPosition = Global.Application.GetCursorPosition(true);
-                QueryScene(cursorPosition);
+                Console.WriteLine($"Cursor position {cursorPosition.X + " " + cursorPosition.Y}");
+
+                if (TraceDebugRay)
+                {
+                    SceneRenderData.TraceDebugRay(cursorPosition);
+                }
+                else
+                {
+                    QueryScene(cursorPosition);
+                }
             }
         }
 
@@ -336,21 +350,7 @@ namespace Ryne.GameStates
         {
             SceneRenderData.RenderStatistics();
         }
-
-        public void VoxelizeModel(string filename, int levels, int voxelizeFlags = 0, string outputFilename = "")
-        {
-            if (string.IsNullOrEmpty(outputFilename))
-            {
-                outputFilename = new FileInfo(filename).Name;
-            }
-
-            var name = Path.GetFileNameWithoutExtension(outputFilename);
-            outputFilename = Global.Config.WorkingDirectory + "VoxelModels/" + name + ".dag";
-
-            RyneTools tools = new RyneTools();
-            tools.VoxelizeModel(filename, outputFilename, levels, voxelizeFlags);
-        }
-
+        
         public void LoadBackgroundHdri(string filename)
         {
             if (!new FileInfo(Global.Config.WorkingDirectory + filename).Exists)
@@ -432,9 +432,11 @@ namespace Ryne.GameStates
         {
             Gui.ClearWindows();
 
-            if (entity is null && !addToSelection)
+            if (entity is null)
             {
-                EntityController.ControlledEntities.Clear();
+                if (!addToSelection)
+                    EntityController.ControlledEntities.Clear();
+
                 return;
             }
 
@@ -473,7 +475,7 @@ namespace Ryne.GameStates
                 {
                     if (Gui.InputFloat4("Camera Position", position))
                     {
-                        EditorCamera.Position = *position;
+                        EditorCamera.SetPosition(*position);
                         EditorCamera.Update(0.0f);
                     }
                 }
@@ -520,9 +522,6 @@ namespace Ryne.GameStates
             }
         }
 
-
-
-
         private void RestoreEditorStateAfterGame()
         {
             EntityController.ControlledEntities.Clear();
@@ -544,7 +543,7 @@ namespace Ryne.GameStates
         private void QueryScene(Float2 viewportPixel)
         {
             Float4 direction = EditorCamera.Unproject(viewportPixel);
-            RyneRay ray = new RyneRay(new Float3(EditorCamera.Position), new Float3(direction), 5000.0f, 0.0f);
+            RyneRay ray = new RyneRay(new Float3(EditorCamera.GetPosition()), new Float3(direction), 5000.0f, 0.0f);
 
             // TODO: keep RyneRayTracingFunctions as private member variable?
             RyneRayTracingFunctions rayTracer = new RyneRayTracingFunctions(SceneRenderData);
@@ -615,9 +614,9 @@ namespace Ryne.GameStates
             if (EditorCamera == null)
                 return;
 
-            EditorCamera.Position = EditorCameraEntity.Transform.Position;
-            EditorCamera.Rotation = EditorCameraEntity.Transform.Rotation.ToRotator().ToFloat3();
-            if (System.Math.Abs(EditorController.FovDelta) > Constants.Epsilon)
+            EditorCamera.SetPosition(EditorCameraEntity.Transform.Position);
+            EditorCamera.SetRotation(EditorCameraEntity.Transform.Rotation.ToRotator().ToFloat3());
+            if (Math.Abs(EditorController.FovDelta) > Constants.Epsilon)
             {
                 float fov = RyneMath.RadiansToDegrees(EditorCamera.FieldOfView) + EditorController.FovDelta * dt;
                 EditorCamera.FieldOfView =

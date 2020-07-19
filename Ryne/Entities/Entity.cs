@@ -9,6 +9,9 @@ using MessagePack;
 
 namespace Ryne.Entities
 {
+    // Initialization function that can be bound when adding the entity
+    public delegate void OnInitialize(Entity owner);
+
     public enum EntityFlag
     {
         Registered,             // Entity registered in EntityManager
@@ -44,6 +47,9 @@ namespace Ryne.Entities
         [IgnoreMember]
         public EventBindings Events { get; protected set; }
 
+        [IgnoreMember]
+        public OnInitialize InitializeFunction;
+
         public Entity()
         {
             Name = GetType().Name;
@@ -59,11 +65,15 @@ namespace Ryne.Entities
 
             // TODO: if editor?
             SetChangedInEditor(true);
+
+            InitializeFunction = null;
         }
 
         public virtual void Initialize()
         {
             EntityFlags = Bitmask.SetBitTo(EntityFlags, (int)EntityFlag.Initialized, 1);
+
+            InitializeFunction?.Invoke(this);
         }
 
         public virtual void Update(float dt)

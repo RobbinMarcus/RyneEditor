@@ -12,9 +12,11 @@ namespace Ryne.GameStates
 
         public MainMenu(StateManager manager) : base(manager)
         {
-            // Setting timer to 0 will show the splash until the scene is loaded
+#if !DEBUG
+            Timer = 3.0f;
+#else
             Timer = 0.0f;
-
+#endif
             AlphaTexture = new RyneTexture();
             Done = false;
         }
@@ -26,7 +28,7 @@ namespace Ryne.GameStates
             AlphaTexture.Type = RyneTextureType.AlbedoTexture;
             if (!AlphaTexture.Load())
             {
-                Logger.Warning("Could not load into texture");
+                Logger.Warning("Could not load texture");
             }
         }
 

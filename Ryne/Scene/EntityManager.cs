@@ -60,13 +60,13 @@ namespace Ryne.Scene
 
         public void Update(float dt)
         {
+            // TODO: if changed
+            UpdateCollisionBvh();
+
             foreach (var system in Systems)
             {
                 system.Update(dt);
             }
-
-            // TODO: if changed
-            UpdateCollisionBvh();
 
             foreach (var entity in Entities)
             {
@@ -89,7 +89,6 @@ namespace Ryne.Scene
 
                 entity.SetFlag(EntityFlag.Registered, true);
                 entity.Initialize();
-
                 Global.StateManager.RegisterEntity(entity);
             }
 

@@ -49,7 +49,7 @@ namespace Ryne
                 NoRendering = config.NoRendering
             };
 
-            base.Initialize(title, Global.Config.WorkingDirectory, appConfig);
+            base.Initialize(title, Global.Config.WorkingDirectory, appConfig, Logger.EngineLog);
             Application = RyneGlobal.GlobalApplication;
             Int2 screenSize = Application.GetScreenSize();
             if (config.Width != screenSize.X || config.Height != screenSize.Y)
@@ -66,6 +66,7 @@ namespace Ryne
             // Initialize managers
             StateManager.Initialize();
             EntityManager.Initialize();
+            TimerManager.Initialize();
         }
 
         public void Update(float dt)

@@ -9,6 +9,7 @@ namespace Ryne.Utility
         // Reset the captured time on frame start
         public bool ResetOnFrameStart;
 
+        public double Seconds => Stopwatch.Elapsed.TotalSeconds;
         public long MilliSeconds => Stopwatch.ElapsedMilliseconds;
 
         public Timer()

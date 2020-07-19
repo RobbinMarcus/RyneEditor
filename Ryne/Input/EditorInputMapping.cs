@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using Ryne.GameStates;
-using Ryne.Gui;
+using Ryne.Gui.Windows;
 using Ryne.Utility.Actions;
 
 namespace Ryne.Input
@@ -213,7 +213,7 @@ namespace Ryne.Input
             if (axis == EditAxis.All)
             {
                 // Set axes from plane tangents relative to camera
-                Float3 planeNormal = (camera.Focus - new Float3(camera.Position)).Normalize();
+                Float3 planeNormal = (camera.Focus - new Float3(camera.GetPosition())).Normalize();
                 xAxis = planeNormal.Cross(camera.Up).Normalize() * -1.0f;
                 yAxis = xAxis.Cross(planeNormal).Normalize();
             }
